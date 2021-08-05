@@ -247,6 +247,8 @@ class ViewController: UIViewController {
         correctWordLabel.font = UIFont.systemFont(ofSize: factor / 10)
         correctWordLabel.text = "Word"
         correctWordLabel.textAlignment = .center
+        correctWordLabel.adjustsFontSizeToFitWidth = true
+        correctWordLabel.textColor = .black
         
         //Setup letter buttons
         initLetterButtons()
@@ -255,6 +257,7 @@ class ViewController: UIViewController {
         scoreLabel.font = UIFont.systemFont(ofSize: factor / 16)
         scoreLabel.text = "Score"
         scoreLabel.textAlignment = .center
+        scoreLabel.textColor = .blue
         
         //Setup stack view
         stackView.addArrangedSubview(buttonStackView)
