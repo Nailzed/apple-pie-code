@@ -13,7 +13,7 @@ class ViewController: UIViewController {
     let correctWordLabel = UILabel()
     var letterButtons = [UIButton]()
     let scoreLabel = UILabel()
-    let stackView = UIStackView()
+    let bottomStackView = UIStackView()
     let topStackView = UIStackView()
     let treeImageView = UIImageView()
     
@@ -227,10 +227,33 @@ class ViewController: UIViewController {
         }
     }
     
-    
-    func updateUI(to size: CGSize){
-        topStackView.axis = size.height < size.width ? .horizontal : .vertical
-        topStackView.frame = CGRect(x: 8, y: 8, width: size.width - 16, height: size.height - 16)
+
+    func setupView(){
+        topStackView.axis = UIDevice.current.orientation.isLandscape ? .horizontal : .vertical
+        topStackView.translatesAutoresizingMaskIntoConstraints = false
+        //        topStackView.axis = size.height < size.width ? .horizontal :      .vertical
+        //        topStackView.frame = CGRect(x: 8, y: 8, width: size.width - 16, height: size.height - 16)
+        
+        let margins = view.layoutMarginsGuide
+        
+        NSLayoutConstraint.activate([
+            topStackView.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
+            topStackView.trailingAnchor.constraint(equalTo: margins.trailingAnchor)
+        ])
+        
+        if #available(iOS 11, *) {
+          let guide = view.safeAreaLayoutGuide
+          NSLayoutConstraint.activate([
+            topStackView.topAnchor.constraint(equalToSystemSpacingBelow: guide.topAnchor, multiplier: 1.0),
+            guide.bottomAnchor.constraint(equalToSystemSpacingBelow: topStackView.bottomAnchor, multiplier: 1.0)
+           ])
+        } else {
+           let standardSpacing: CGFloat = 8.0
+           NSLayoutConstraint.activate([
+           topStackView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor, constant: standardSpacing),
+           bottomLayoutGuide.topAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: standardSpacing)
+           ])
+        }
     }
     
     override func viewDidLoad() {
@@ -260,17 +283,17 @@ class ViewController: UIViewController {
         scoreLabel.textColor = .blue
         
         //Setup stack view
-        stackView.addArrangedSubview(buttonStackView)
-        stackView.addArrangedSubview(correctWordLabel)
-        stackView.addArrangedSubview(scoreLabel)
-        stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 8
+        bottomStackView.addArrangedSubview(buttonStackView)
+        bottomStackView.addArrangedSubview(correctWordLabel)
+        bottomStackView.addArrangedSubview(scoreLabel)
+        bottomStackView.axis = .vertical
+        bottomStackView.distribution = .fillProportionally
+        bottomStackView.spacing = 8
         
         //Setup top Stack view
         topStackView.distribution = .fillEqually
         topStackView.addArrangedSubview(treeImageView)
-        topStackView.addArrangedSubview(stackView)
+        topStackView.addArrangedSubview(bottomStackView)
         topStackView.spacing = 16
         
         
@@ -282,14 +305,16 @@ class ViewController: UIViewController {
         view.backgroundColor = .white
         view.addSubview(topStackView)
         
-        updateUI(to: view.bounds.size)
+        //updateUI(to: view.bounds.size)
         
+        setupView()
         newRound()
 
     }
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        updateUI(to: size)
+        //        updateUI(to: size)
+        setupView()
     }
 
 }
